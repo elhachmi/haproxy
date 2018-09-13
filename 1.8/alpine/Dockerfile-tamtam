@@ -1,10 +1,7 @@
-# vim:set ft=dockerfile:
-FROM alpine:3.8
-
+FROM certbot/certbot
 ENV HAPROXY_MAJOR 1.8
 ENV HAPROXY_VERSION 1.8.13
 ENV HAPROXY_SHA256 2bf5dafbb5f1530c0e67ab63666565de948591f8e0ee2a1d3c84c45e738220f1
-
 # see https://sources.debian.net/src/haproxy/jessie/debian/rules/ for some helpful navigation of the possible "make" arguments
 RUN set -x \
 	\
@@ -51,13 +48,11 @@ RUN set -x \
 	)" \
 	&& apk add --virtual .haproxy-rundeps $runDeps \
 	&& apk del .build-deps
-
 # https://www.haproxy.org/download/1.8/doc/management.txt
 # "4. Stopping and restarting HAProxy"
 # "when the SIGTERM signal is sent to the haproxy process, it immediately quits and all established connections are closed"
 # "graceful stop is triggered when the SIGUSR1 signal is sent to the haproxy process"
 STOPSIGNAL SIGUSR1
 
-COPY docker-entrypoint.sh /
 ENTRYPOINT []
-CMD ["haproxy", "-W", "-db", "-f", "/usr/local/etc/haproxy/haproxy.cfg", "&&", "tail", "-f", "/dev/null"]
+CMD ["sh","-c", "haproxy -W -db -f /usr/local/etc/haproxy/haproxy.cfg && tail -f /dev/null"]
