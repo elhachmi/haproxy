@@ -53,6 +53,7 @@ RUN set -x \
 # "when the SIGTERM signal is sent to the haproxy process, it immediately quits and all established connections are closed"
 # "graceful stop is triggered when the SIGUSR1 signal is sent to the haproxy process"
 STOPSIGNAL SIGUSR1
-
+COPY reload.sh /
+COPY renew-cert-post-hook.sh /
 ENTRYPOINT []
-CMD ["sh","-c", "haproxy -W -db -f /usr/local/etc/haproxy/haproxy.cfg && tail -f /dev/null"]
+CMD ["sh","-c", "haproxy -W -db -f /usr/local/etc/haproxy/haproxy.cfg & tail -f /dev/null"]
