@@ -1,5 +1,12 @@
-echo "\n\n\n\nConcatenating fullchain and private key in pem file .... "
-cat /etc/letsencrypt/live/dev-certificates/fullchain.pem /etc/letsencrypt/live/dev-certificates/privkey.pem  > /etc/letsencrypt/live/dev-certificates/certificate.pem 
-echo "\n\n\n\nReloading Haproxy configuration..."
+echo
+echo 
+echo "Concatenating fullchain and private key in pem file .... "
+CERT=$(certbot certificates | awk -F ': ' '/Certificate Name/{print $2}')
+cat /etc/letsencrypt/live/${CERT}/fullchain.pem /etc/letsencrypt/live/${CERT}/privkey.pem  > /etc/letsencrypt/live/${CERT}/certificate.pem 
+echo
+echo 
+echo "Reloading Haproxy configuration..."
 /reload.sh &
-echo "\n\n\n\n Renwal done "
+echo
+echo 
+echo " Renwal done "
